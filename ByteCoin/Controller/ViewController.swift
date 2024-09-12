@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, CoinManagerDelegate {
+class ViewController: UIViewController {
 
     @IBOutlet weak var currencyLabel: UILabel!
     @IBOutlet weak var bitcoinLabel: UILabel!
@@ -26,19 +26,10 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         return 1
     }
     
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return coinManger.currencyArray.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return coinManger.currencyArray[row]
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let selectedCurrency = coinManger.currencyArray[row]
-        coinManger.getCoinPrice(for: selectedCurrency)
-    
-    }
+}
+
+//MARK: - CoinManagerDelegate
+extension ViewController: CoinManagerDelegate {
     
     func didUpdateCurrency(currency: String, price: String) {
         DispatchQueue.main.async {
@@ -50,6 +41,22 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     func didFailWeatherError(error: any Error) {
         print("error:\(error)")
     }
-    
 }
 
+//MARK: - UIPickerView
+extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return coinManger.currencyArray.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return coinManger.currencyArray[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        let selectedCurrency = coinManger.currencyArray[row]
+        coinManger.getCoinPrice(for: selectedCurrency)
+        
+    }
+}
